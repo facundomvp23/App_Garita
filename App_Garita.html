@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App Garita · Qori Urqu</title>
+<style>
+:root{--navy:#14213d;--azul:#1d4e89;--verde:#1b7a3d;--verdebg:#e3f4e8;--rojo:#b3261e;--rojobg:#fde8e6;--ambar:#9a5b00;--ambarbg:#fff1d6;--gris:#5b6472;--bg:#f2f4f7;--card:#fff;--line:#d5dae1}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:#1b1f27;font-size:16px;line-height:1.4}
+header{background:var(--navy);color:#fff;padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+header h1{font-size:1.15em;margin:0}
+header small{display:block;opacity:.75;font-weight:400}
+select,input[type=text]{font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:#fff}
+nav{display:flex;gap:8px;padding:12px 16px 0}
+nav button{flex:1;padding:12px;border:0;border-radius:10px 10px 0 0;background:#dfe4ea;font:inherit;font-weight:700;cursor:pointer;color:var(--navy)}
+nav button.on{background:var(--card);box-shadow:0 -2px 0 var(--azul) inset}
+main{padding:0 16px 24px;max-width:980px;margin:0 auto}
+.panel{background:var(--card);border-radius:0 0 14px 14px;padding:18px;border:1px solid var(--line);border-top:0}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row input{flex:1;min-width:180px;font-size:1.3em;letter-spacing:.08em}
+button.btn{font:inherit;font-weight:700;border:0;border-radius:10px;padding:12px 20px;cursor:pointer;background:var(--azul);color:#fff}
+button.btn.sec{background:#e6ebf2;color:var(--navy)}
+button.btn.ok{background:var(--verde)}
+button.btn.no{background:var(--rojo)}
+button.btn:disabled{opacity:.4;cursor:not-allowed}
+.msg{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--ambarbg);color:#5a3500;font-weight:600}
+.ficha{margin-top:16px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ficha .top{padding:14px 16px;background:#f7f9fb}
+.ficha h2{margin:0;font-size:1.25em}
+.ficha .sub{color:var(--gris)}
+.semaforo{display:flex;align-items:center;gap:14px;padding:16px;font-weight:800;font-size:1.35em}
+.semaforo .luz{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:26px;flex:none}
+.semaforo.verde{background:var(--verdebg);color:var(--verde)}.semaforo.verde .luz{background:var(--verde)}
+.semaforo.rojo{background:var(--rojobg);color:var(--rojo)}.semaforo.rojo .luz{background:var(--rojo)}
+.semaforo.ambar{background:var(--ambarbg);color:var(--ambar)}.semaforo.ambar .luz{background:var(--ambar)}
+.semaforo small{display:block;font-weight:500;font-size:.62em;color:#333}
+ul.cond{list-style:none;margin:0;padding:6px 16px}
+ul.cond li{display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #eef0f3}
+ul.cond li:last-child{border:0}
+.mk{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;flex:none}
+.mk.s{background:var(--verde)}.mk.n{background:var(--rojo)}
+ul.cond .det{color:var(--gris);font-size:.9em;margin-left:auto;text-align:right}
+.acciones{padding:14px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--line);background:#fafbfc}
+.priv{display:flex;gap:8px;align-items:center;font-size:.92em;flex-basis:100%}
+.priv input{width:22px;height:22px}
+.big-n{font-size:3em;font-weight:800;color:var(--navy);line-height:1}
+.dentro-head{display:flex;gap:16px;align-items:center;margin-bottom:12px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 8px;border-bottom:1px solid #eceff3;text-align:left;vertical-align:middle}
+th{font-size:.85em;color:var(--gris)}
+.tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.8em;font-weight:700;background:var(--ambarbg);color:var(--ambar)}
+.tag.r{background:var(--rojobg);color:var(--rojo)}
+footer{max-width:980px;margin:0 auto;padding:0 16px 24px;color:var(--gris);font-size:.88em}
+footer a{color:var(--azul);cursor:pointer;text-decoration:underline}
+.modal{position:fixed;inset:0;background:rgba(10,15,30,.65);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+.modal.on{display:flex}
+.modal .box{background:#fff;border-radius:16px;max-width:620px;max-height:92vh;overflow:auto;padding:22px}
+.modal h3{margin:0 0 8px}
+.modal li{margin:6px 0}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:12px;font-weight:700;display:none;z-index:10}
+.alerta{background:var(--rojobg);color:var(--rojo);padding:10px 12px;border-radius:10px;font-weight:700;margin:10px 0}
+html{font-size:20px}
+body{font-size:1rem}
+button.btn{min-height:64px;font-size:1.05rem;padding:14px 26px}
+nav button{min-height:64px;font-size:1.05rem}
+.row input{min-height:64px;font-size:1.6rem}
+.semaforo{font-size:1.6rem}.semaforo .luz{width:64px;height:64px;font-size:36px}
+.mk{width:34px;height:34px;font-size:1.05rem}
+ul.cond li{padding:12px 0}
+.senal{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:99px;font-weight:800;font-size:.9rem;background:#1b7a3d;color:#fff}
+.senal.off{background:#b3261e}
+.banda{background:var(--rojobg);color:var(--rojo);font-weight:700;padding:12px 16px;text-align:center}
+.banda.pend{background:var(--ambarbg);color:var(--ambar)}
+header .btn.sec{min-height:44px;font-size:.8rem;padding:6px 12px}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>App Garita · Control de visitas<small>Unidad Minera Chakiqocha · Qori Urqu S.A.A. · PROTOTIPO con datos de prueba</small></h1></div>
+  <div class="row" style="align-items:center;gap:8px">
+    <span id="senal" class="senal"></span>
+    <button class="btn sec" id="btnSenal" type="button">Simular corte de señal</button>
+    <label for="vig" style="font-size:.9em">Vigilante:</label>
+    <select id="vig"></select>
+  </div>
+</header>
+<div id="banda" class="banda" style="display:none"></div>
+<nav>
+  <button id="tabReg" class="on" type="button">Registrar</button>
+  <button id="tabDen" type="button">Dentro ahora (<span id="nDen">0</span>)</button>
+</nav>
+<main>
+  <section id="vReg" class="panel">
+    <label for="dni" style="font-weight:700">Escriba el DNI o carné de extranjería</label>
+    <div class="row" style="margin-top:8px">
+      <input type="text" id="dni" inputmode="numeric" autocomplete="off" placeholder="Ej.: 15254332">
+      <button class="btn" id="btnBuscar" type="button">Buscar</button>
+    </div>
+    <div id="aviso"></div>
+    <div id="resultado"></div>
+  </section>
+  <section id="vDen" class="panel" style="display:none">
+    <div class="dentro-head"><div class="big-n" id="bigN">0</div><div><strong>personas dentro de la unidad ahora</strong><br><span class="sub" style="color:var(--gris)">Lista para simulacros y evacuaciones</span></div></div>
+    <div id="listaDen"></div>
+  </section>
+</main>
+<footer>Prototipo académico (Sesión 12) · Solo datos de prueba · <a id="lnkPriv">Aviso de privacidad (Ley 29733)</a></footer>
+
+<div class="modal on" id="modal">
+  <div class="box" role="dialog" aria-labelledby="mt">
+    <h3 id="mt">Aviso de privacidad</h3>
+    <p>De acuerdo con la <strong>Ley 29733</strong> y su reglamento (<strong>D.S. 016-2024-JUS</strong>), informamos:</p>
+    <ul>
+      <li><strong>Quién:</strong> Compañía Minera Qori Urqu S.A.A. (Unidad Minera Chakiqocha).</li>
+      <li><strong>Para qué:</strong> controlar el acceso a la unidad, comprobar los requisitos de seguridad del visitante (inducción, seguro, certificado médico, EPP) y atender fiscalizaciones y emergencias.</li>
+      <li><strong>Qué datos:</strong> DNI o CE, nombres, empresa, y constancias de inducción, seguro y certificado médico.</li>
+      <li><strong>Quién los ve:</strong> vigilantes de garita, SSO, el anfitrión y la Gerencia de la Unidad. No se comparten con terceros ajenos a la fiscalización.</li>
+      <li><strong>Derechos:</strong> acceso, rectificación, cancelación y oposición, escribiendo al área de SSO.</li>
+    </ul>
+    <p style="color:#5b6472"><em>Este prototipo solo contiene datos de prueba; ningún DNI es real.</em></p>
+    <button class="btn" id="btnAcepto" type="button">Entendido</button>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const AREAS_RESTRINGIDAS=['Tajo abierto','Planta de procesos','Polvorín'];
+const VIGILANTES=['Teodoro Quispe','Wilber Mamani','Gladys Flores','Edwin Ñahui','Víctor Huamán','Jesús Cárdenas'];
+// Datos de prueba (tomados del caso). Ningún DNI es real.
+const VISITANTES=[
+ {dni:'12034333',nombre:'Castillo Pinedo, Katherine',empresa:'Servicios Generales Huaylas S.A.C.',tipo:'Contratista',area:'Mantenimiento',anfitrion:'Ing. Hugo Valverde',autorizado:true,desde:'2026-01-01',hasta:'2026-12-31',induccion:false,seguro:{tipo:'SCTR',vence:'2026-08-15'},medico:true,epp:true,escolta:null},
+ {dni:'25976519',nombre:'Flores Paredes, Víctor',empresa:'Explosivos del Pacífico S.A.',tipo:'Proveedor',area:'Polvorín',anfitrion:'Ing. Diana Rojas',autorizado:true,desde:'2026-01-01',hasta:'2026-12-31',induccion:false,seguro:{tipo:'SCTR',vence:'2027-03-31'},medico:true,epp:true,escolta:'Ing. Diana Rojas'},
+ {dni:'51409143',nombre:'Mamani Tello, Lucía',empresa:'OSINERGMIN',tipo:'Inspector',area:'Tajo abierto',anfitrion:'Ing. Diana Rojas',autorizado:true,desde:'2026-01-01',hasta:'2026-12-31',induccion:true,seguro:{tipo:'Seguro de accidentes',vence:'2027-06-30'},medico:true,epp:true,escolta:null},
+ {dni:'53446178',nombre:'Espinoza Lozano, Paola',empresa:'Ferreyros S.A.',tipo:'Proveedor',area:'Mantenimiento',anfitrion:'Ing. Hugo Valverde',autorizado:true,desde:'2026-01-01',hasta:'2026-12-31',induccion:true,seguro:{tipo:'SCTR',vence:'2027-02-28'},medico:true,epp:true,escolta:null},
+ {dni:'06859458',nombre:'Chávez Mendoza, Ricardo',empresa:'OSINERGMIN',tipo:'Inspector',area:'Planta de procesos',anfitrion:'Ing. Marco Tello',autorizado:true,desde:'2026-01-01',hasta:'2026-12-31',induccion:true,seguro:{tipo:'Seguro de accidentes',vence:'2027-06-30'},medico:true,epp:true,escolta:'Ing. Marco Tello'},
+ {dni:'15254332',nombre:'Alvarado Torres, Víctor',empresa:'Transportes Cóndor del Norte E.I.R.L.',tipo:'Proveedor',area:'Almacén',anfitrion:'Sr. Iván Pinedo',autorizado:true,desde:'2026-01-01',hasta:'2026-12-31',induccion:true,seguro:{tipo:'SCTR',vence:'2027-01-31'},medico:true,epp:true,escolta:null}
+];
+const $=s=>document.querySelector(s);
+const pad=n=>String(n).padStart(2,'0');
+const hoyISO=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+const dmy=s=>s.split('-').reverse().join('/');
+const hhmm=iso=>{const d=new Date(iso);return pad(d.getHours())+':'+pad(d.getMinutes())};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2600)}
+
+let state={registros:[],sinSenal:false,completado:{}};
+const KEY='qoriurqu_garita_proto';
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function load(){try{const s=localStorage.getItem(KEY);if(s){state=Object.assign(state,JSON.parse(s));return true}}catch(e){}return false}
+if(!load()){
+  // Caso del simulacro: Paola Espinoza ingresó y nunca se registró su salida
+  state.registros.push({id:1,dni:'53446178',nombre:'Espinoza Lozano, Paola',empresa:'Ferreyros S.A.',area:'Mantenimiento',ingreso:new Date(Date.now()-14*3600e3).toISOString(),salida:null,vigilante:'Edwin Ñahui',sync:true});
+  save();
+}
+let actual=null;
+
+function datosVisitante(v){
+  const o=Object.assign({},v);
+  const c=state.completado[v.dni]||{};
+  if(c.induccion)o.induccion=true;
+  if(c.epp)o.epp=true;
+  return o;
+}
+function evaluar(v){
+  const hoy=hoyISO();
+  const lista=[
+    {k:'id',n:'1. Identidad (DNI / CE)',ok:true,det:'DNI '+v.dni+' en el sistema'},
+    {k:'aut',n:'2. Autorización del anfitrión',ok:v.autorizado&&v.desde<=hoy&&hoy<=v.hasta,det:v.anfitrion+' · hasta '+dmy(v.hasta)},
+    {k:'ind',n:'3. Inducción con constancia',ok:v.induccion,det:v.induccion?'Constancia registrada':'Sin constancia'},
+    {k:'seg',n:'4. '+v.seguro.tipo+' vigente',ok:v.seguro.vence>=hoy,det:(v.seguro.vence>=hoy?'Vence ':'VENCIÓ ')+dmy(v.seguro.vence)},
+    {k:'med',n:'5. Certificado médico (altura)',ok:v.medico,det:v.medico?'Presentado':'No presentó'},
+    {k:'epp',n:'6. EPP entregado',ok:v.epp,det:v.epp?'Entregado':'Pendiente'}
+  ];
+  if(AREAS_RESTRINGIDAS.includes(v.area))lista.push({k:'esc',n:'+ Escolta (zona restringida)',ok:!!v.escolta,det:v.escolta?v.escolta:'Sin escolta asignada'});
+  return lista;
+}
+function semaforo(lista){
+  const fallan=lista.filter(c=>!c.ok);
+  if(!fallan.length)return 'verde';
+  const solucionables=['ind','epp'];
+  return fallan.every(c=>solucionables.includes(c.k))?'ambar':'rojo';
+}
+function dentro(){return state.registros.filter(r=>!r.salida)}
+
+function buscar(){
+  let q=$('#dni').value.trim();
+  $('#aviso').innerHTML='';$('#resultado').innerHTML='';actual=null;
+  if(!q){return aviso('Escriba el número de documento.')}
+  if(!/^\d+$/.test(q))return aviso('Escriba solo números, sin puntos ni espacios.');
+  if(q.length===7&&VISITANTES.some(x=>x.dni==='0'+q)){
+    $('#aviso').innerHTML='<div class="msg">El DNI tiene 7 dígitos. En el Excel se perdió el cero inicial. ¿Quiso decir <strong>0'+q+'</strong>? <button class="btn sec" id="btnCero" type="button">Usar 0'+q+'</button></div>';
+    $('#btnCero').onclick=()=>{$('#dni').value='0'+q;buscar()};return;
+  }
+  if(q.length!==8&&q.length!==9)return aviso('El DNI debe tener 8 dígitos (o 9 el carné de extranjería). Usted escribió '+q.length+'.');
+  const v=VISITANTES.find(x=>x.dni===q);
+  if(!v)return aviso('No figura en el sistema. Pida al anfitrión que registre la solicitud en la App Accesos.');
+  actual=datosVisitante(v);
+  render();
+}
+function aviso(t){$('#aviso').innerHTML='<div class="msg">'+esc(t)+'</div>'}
+
+function render(){
+  const v=actual;if(!v){$('#resultado').innerHTML='';return}
+  const lista=evaluar(v),est=semaforo(lista);
+  const titulos={verde:['✔','PUEDE PASAR','Cumple todas las condiciones'],rojo:['✖','NO PUEDE PASAR','Falta: '+lista.filter(c=>!c.ok).map(c=>c.n.replace(/^\d\. |^\+ /,'')).join(', ')],ambar:['!','COMPLETAR EN GARITA','Falta solo: '+lista.filter(c=>!c.ok).map(c=>c.n.replace(/^\d\. /,'')).join(', ')]};
+  const t=titulos[est];
+  const reg=dentro().find(r=>r.dni===v.dni);
+  let acc='';
+  if(reg){
+    acc='<div class="alerta" style="flex-basis:100%">Ya figura DENTRO desde las '+hhmm(reg.ingreso)+'. No se registra otro ingreso.</div><button class="btn no" id="btnSalida" type="button">Registrar salida</button>';
+  }else{
+  if(est==='ambar'){
+    const falta=lista.filter(c=>!c.ok).map(c=>c.k);
+    if(falta.includes('ind'))acc+='<button class="btn sec" data-comp="induccion" type="button">Vio el video de inducción</button>';
+    if(falta.includes('epp'))acc+='<button class="btn sec" data-comp="epp" type="button">Se entregó el EPP</button>';
+  }
+  acc+='<label class="priv"><input type="checkbox" id="chkPriv"> Informé al visitante para qué se registran sus datos (aviso de privacidad)</label>'+
+       '<button class="btn ok" id="btnIngreso" type="button" disabled>Registrar ingreso</button>';
+  }
+  $('#resultado').innerHTML='<div class="ficha"><div class="top"><h2>'+esc(v.nombre)+'</h2><div class="sub">'+esc(v.empresa)+' · '+esc(v.tipo)+' · va a <strong>'+esc(v.area)+'</strong> · anfitrión '+esc(v.anfitrion)+'</div></div>'+
+   '<div class="semaforo '+est+'"><span class="luz">'+t[0]+'</span><div>'+t[1]+'<small>'+esc(t[2])+'</small></div></div>'+
+   '<ul class="cond">'+lista.map(c=>'<li><span class="mk '+(c.ok?'s':'n')+'">'+(c.ok?'✔':'✖')+'</span><span>'+esc(c.n)+'</span><span class="det">'+esc(c.det)+'</span></li>').join('')+'</ul>'+
+   '<div class="acciones">'+acc+'</div></div>';
+  const bi=$('#btnIngreso'),chk=$('#chkPriv');
+  if(bi){
+    const puede=est==='verde';
+    const upd=()=>{bi.disabled=!(puede&&chk.checked)};
+    chk.onchange=upd;upd();
+    bi.onclick=()=>ingreso(v);
+  }
+  const bs=$('#btnSalida');if(bs)bs.onclick=()=>salida(reg.id);
+  document.querySelectorAll('[data-comp]').forEach(b=>b.onclick=()=>{
+    state.completado[v.dni]=Object.assign(state.completado[v.dni]||{},{[b.dataset.comp]:true});save();actual=datosVisitante(VISITANTES.find(x=>x.dni===v.dni));render();
+  });
+}
+function ingreso(v){
+  const id=Math.max(0,...state.registros.map(r=>r.id))+1;
+  state.registros.push({id,dni:v.dni,nombre:v.nombre,empresa:v.empresa,area:v.area,ingreso:new Date().toISOString(),salida:null,vigilante:$('#vig').value,sync:!state.sinSenal});
+  save();toast('Ingreso registrado '+hhmm(new Date().toISOString()));
+  $('#resultado').innerHTML='';$('#dni').value='';actual=null;pintar();
+}
+function salida(id){
+  const r=state.registros.find(x=>x.id===id);r.salida=new Date().toISOString();r.sync=!state.sinSenal&&r.sync;
+  r.sync=!state.sinSenal;
+  save();toast('Salida registrada '+hhmm(r.salida));
+  if(actual)render();pintar();
+}
+function pintar(){
+  const d=dentro();
+  $('#nDen').textContent=d.length;$('#bigN').textContent=d.length;
+  const filas=d.map(r=>{
+    const h=(Date.now()-new Date(r.ingreso))/3600e3;
+    let marca='';
+    if(h>12)marca=' <span class="tag r">Más de 12 h: verificar</span>';
+    return '<tr><td><strong>'+esc(r.nombre)+'</strong>'+marca+'<br><span style="color:#5b6472">'+esc(r.empresa)+'</span></td><td>'+esc(r.area)+'</td><td>'+hhmm(r.ingreso)+'<br><span style="color:#5b6472">'+(h<1?Math.round(h*60)+' min':h.toFixed(1)+' h')+'</span></td><td><button class="btn sec" data-sal="'+r.id+'" type="button">Registrar salida</button></td></tr>'}).join('');
+  $('#listaDen').innerHTML=d.length?'<table><thead><tr><th>Persona</th><th>Zona</th><th>Ingreso</th><th></th></tr></thead><tbody>'+filas+'</tbody></table>':'<p>No hay nadie dentro.</p>';
+  document.querySelectorAll('[data-sal]').forEach(b=>b.onclick=()=>salida(+b.dataset.sal));
+  pintarSenal();
+}
+function pintarSenal(){
+  const pend=state.registros.filter(r=>!r.sync).length;
+  $('#senal').className='senal'+(state.sinSenal?' off':'');
+  $('#senal').textContent=state.sinSenal?'✖ Sin señal':'✔ Con señal';
+  $('#btnSenal').textContent=state.sinSenal?'Volver a tener señal':'Simular corte de señal';
+  const b=$('#banda');
+  if(state.sinSenal){b.style.display='block';b.className='banda';b.textContent='Sin señal: puede seguir trabajando. Los registros se guardan en esta tablet ('+pend+' por enviar).'}
+  else if(pend){b.style.display='block';b.className='banda pend';b.innerHTML=pend+' registro(s) guardados en la tablet sin enviar. <button class="btn sec" id="btnSync" type="button">Enviar ahora</button>';$('#btnSync').onclick=sync}
+  else b.style.display='none';
+}
+function sync(){state.registros.forEach(r=>r.sync=true);save();toast('Registros enviados (simulado: el prototipo no tiene servidor)');pintar()}
+$('#btnSenal').onclick=()=>{state.sinSenal=!state.sinSenal;save();if(!state.sinSenal&&state.registros.some(r=>!r.sync))sync();pintar()};
+window.addEventListener('offline',()=>{state.sinSenal=true;save();pintar()});
+window.addEventListener('online',()=>{state.sinSenal=false;sync()});
+
+$('#vig').innerHTML=VIGILANTES.map(n=>'<option>'+n+'</option>').join('');
+$('#btnBuscar').onclick=buscar;
+$('#dni').addEventListener('keydown',e=>{if(e.key==='Enter')buscar()});
+function tab(n){$('#vReg').style.display=n?'none':'block';$('#vDen').style.display=n?'block':'none';$('#tabReg').className=n?'':'on';$('#tabDen').className=n?'on':'';pintar()}
+$('#tabReg').onclick=()=>tab(0);$('#tabDen').onclick=()=>tab(1);
+$('#btnAcepto').onclick=()=>$('#modal').classList.remove('on');
+$('#lnkPriv').onclick=()=>$('#modal').classList.add('on');
+pintar();
+</script>
+</body>
+</html>
